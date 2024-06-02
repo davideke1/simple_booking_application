@@ -1,0 +1,12 @@
+{% extends 'userbase.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Payment Success</h2>
+    </div>
+    <div class="card-body">
+        <p>Your payment was successful. Booking ID: {{ booking.id }}</p>
+        <a href="{% url 'booking_status' booking.id %}" class="btn btn-primary">View Booking Status</a>
+    </div>
+</div>
+{% endblock %}

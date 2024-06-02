@@ -1,0 +1,47 @@
+{% extends 'delivery_base.html' %}
+{% block title %}Dashboard - Delivery{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Delivery Dashboard</h2>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Assigned Deliveries</h4>
+                </div>
+                <div class="card-body">
+                    {% if deliveries %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Cylinder Type</th>
+                                    <th>Preferred Delivery Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for delivery in deliveries %}
+                                    <tr>
+                                        <td>{{ delivery.id }}</td>
+                                        <td>{{ delivery.cylinder_type.type }}</td>
+                                        <td>{{ delivery.preferred_delivery_date }}</td>
+                                        <td>{{ delivery.status }}</td>
+                                        <td>
+                                            <a href="{% url 'update-delivery-status' delivery.id %}" class="btn btn-primary btn-sm">Update Status</a>
+                                            <a href="{% url 'chat_view' delivery.id %}" class="btn btn-secondary btn-sm">Chat</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>No assigned deliveries available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

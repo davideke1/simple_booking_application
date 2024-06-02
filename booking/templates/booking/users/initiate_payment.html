@@ -1,0 +1,48 @@
+{% extends 'userbase.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Initiate Payment</h2>
+    </div>
+    <div class="card-body">
+        <p>Total Amount: $20.00</p>
+        <button id="checkout-button" class="btn btn-primary">Pay Now</button>
+    </div>
+</div>
+<script src="https://js.stripe.com/v3/"></script>
+<script type="text/javascript">
+    var stripe = Stripe('{{ stripe_publishable_key }}');
+    var checkoutButton = document.getElementById('checkout-button');
+
+    checkoutButton.addEventListener('click', function () {
+        fetch('/create-checkout-session/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'booking_id': '{{ booking.id }}'
+            })
+        })
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            return stripe.redirectToCheckout({ sessionId: data.id });
+        })
+        .then(function (result) {
+            if (result.error) {
+                alert(result.error.message);
+            }
+        })
+        .catch(function (error) {
+            console.error('Error:', error);
+            alert(error.message);
+        });
+    });
+</script>
+{% endblock %}

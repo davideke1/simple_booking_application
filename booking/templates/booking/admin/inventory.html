@@ -1,0 +1,37 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h2>Inventory Management</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-primary btn-block">Add/Update Cylinder</button>
+                </div>
+            </form>
+            <hr>
+            <h3>Current Inventory</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cylinder in cylinders %}
+                    <tr>
+                        <td>{{ cylinder.type }}</td>
+                        <td>{{ cylinder.stock }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

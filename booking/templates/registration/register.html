@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+{#    <link rel="stylesheet" href="{% static 'css/styles.css' %}">#}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .container h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .container form .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .container form .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .container form .form-group input[type="email"],
+        .container form .form-group input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .container form .form-group input[type="radio"] {
+            margin-right: 10px;
+        }
+        .container form button {
+            background-color: #5cb85c;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .container form button:hover {
+            background-color: #4cae4c;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+        .footer a {
+            color: #5cb85c;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                {{ form.email }}
+            </div>
+            <div class="form-group">
+                <label for="id_password1">Password</label>
+                {{ form.password1 }}
+            </div>
+            <div class="form-group">
+                <label for="id_password2">Confirm Password</label>
+                {{ form.password2 }}
+            </div>
+            <div class="form-group">
+                <label>Account Type</label>
+                <label>
+                    <input type="radio" name="role" value="user" checked> User
+                </label>
+                <label>
+                    <input type="radio" name="role" value="delivery"> Delivery Driver
+                </label>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+         <ul id="errorList">
+                        <!-- Errors will be inserted here by JavaScript -->
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+        <div class="footer">
+            Already have an account? <a href="{% url 'login' %}">Login</a>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const password1 = document.getElementById('id_password1');
+    const password2 = document.getElementById('id_password2');
+    const errorMessage = document.createElement('div');
+    errorMessage.style.color = 'red';
+    errorMessage.style.marginTop = '10px';
+
+    form.addEventListener('submit', function(event) {
+        if (password1.value !== password2.value) {
+            event.preventDefault();
+            errorMessage.textContent = 'Passwords do not match!';
+            form.appendChild(errorMessage);
+        }
+    });
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends 'userbase.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2>Booking History </h2>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Cylinder Type</th>
+                        <th>Preferred Delivery Date</th>
+                        <th>Status</th>
+                        <th>Actions</th> <!-- Add Actions column -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.id }}</td>
+                        <td>{{ booking.cylinder_type.type }}</td>
+                        <td>{{ booking.preferred_delivery_date }}</td>
+                        <td>{{ booking.status }}</td>
+                        <td>
+                            {% if booking.payment_status == 'Completed' %}
+                            <a href="{% url 'generate_invoice' booking.id %}" class="btn btn-success">Generate Invoice</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

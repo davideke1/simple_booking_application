@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .dashboard-card {
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .dashboard-card-header {
+            background-color: #007bff;
+            color: white;
+        }
+        .dashboard-container {
+            margin-top: 20px;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+    </style>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container dashboard-container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card dashboard-card">
+                    <div class="card-header dashboard-card-header">Create Booking</div>
+                    <div class="card-body">
+                        <a href="{% url 'create_booking' %}" class="btn btn-primary btn-block">Create Booking</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card">
+                    <div class="card-header dashboard-card-header">Booking History</div>
+                    <div class="card-body">
+                        <a href="{% url 'booking_history' %}" class="btn btn-primary btn-block">View Booking History</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card">
+                    <div class="card-header dashboard-card-header">Booking Status</div>
+                    <div class="card-body">
+                        {% if bookings %}
+                            <ul class="list-group">
+                                {% for booking in bookings %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Booking ID: {{ booking.id }} - {{ booking.status }}
+                                        <div>
+                                            <a href="{% url 'booking_status' booking.id %}" class="btn btn-link">Check Status</a>
+                                            {% if booking.payment_status != 'Completed' %}
+                                                <button class="btn btn-primary btn-sm pay-now" data-booking-id="{{ booking.id }}">Pay Now</button>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No bookings available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var stripe = Stripe('pk_test_51PMzDVP3DrxxXVk6rHyv9nFBgNAhGQVpIyKaM7s3smt0eaTR4wN73my3UJFRDMdVVz5xtog8nrkjLwR65W3EPQD1005aPgPvip');
+
+            var payNowButtons = document.querySelectorAll('.pay-now');
+            payNowButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var bookingId = this.getAttribute('data-booking-id');
+
+                    fetch('/create-checkout-session/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            booking_id: bookingId
+                        })
+                    })
+                    .then(function (response) {
+                        if (!response.ok) {
+                            return response.json().then(function (data) {
+                                throw new Error(data.error || 'Request failed');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(function (session) {
+                        return stripe.redirectToCheckout({ sessionId: session.id });
+                    })
+                    .then(function (result) {
+                        if (result.error) {
+                            alert(result.error.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error('Error:', error);
+                    });
+                });
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

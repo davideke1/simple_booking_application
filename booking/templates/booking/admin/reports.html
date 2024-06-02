@@ -1,0 +1,39 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h2>Reports</h2>
+        </div>
+        <div class="card-body">
+            <h3>All Bookings</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>User</th>
+                        <th>Cylinder Type</th>
+                        <th>Preferred Delivery Date</th>
+                        <th>Delivery Address</th>
+                        <th>Status</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.id }}</td>
+                        <td>{{ booking.user.email }}</td>
+                        <td>{{ booking.cylinder_type.type }}</td>
+                        <td>{{ booking.preferred_delivery_date }}</td>
+                        <td>{{ booking.delivery_address }}</td>
+                        <td>{{ booking.status }}</td>
+                        <td>{{ booking.payment_status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

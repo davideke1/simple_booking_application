@@ -1,0 +1,12 @@
+{% extends 'userbase.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Payment Cancelled</h2>
+    </div>
+    <div class="card-body">
+        <p>Your payment was cancelled. Booking ID: {{ booking.id }}</p>
+        <a href="{% url 'create_booking' %}" class="btn btn-primary">Try Again</a>
+    </div>
+</div>
+{% endblock %}

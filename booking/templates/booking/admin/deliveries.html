@@ -1,0 +1,95 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Delivery Management</h2>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Confirmed and Assigned Bookings</h4>
+                </div>
+                <div class="card-body">
+                    {% if bookings %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Cylinder Type</th>
+                                    <th>Preferred Delivery Date</th>
+                                    <th>Delivery Person</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in bookings %}
+                                    <tr>
+                                        <td>{{ booking.id }}</td>
+                                        <td>{{ booking.cylinder_type.type }}</td>
+                                        <td>{{ booking.preferred_delivery_date }}</td>
+                                        <td>
+                                            {% if booking.delivery_person %}
+                                                {{ booking.delivery_person.email }}
+                                            {% else %}
+                                                Not assigned
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <form class="delivery-form" data-booking-id="{{ booking.id }}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                                <select name="delivery_person" class="form-control">
+                                                    <option value="" disabled selected>Select Delivery Person</option>
+                                                    {% for person in delivery_personnel %}
+                                                        <option value="{{ person.id }}" {% if booking.delivery_person and person.id == booking.delivery_person.id %}selected{% endif %}>
+                                                            {{ person.email }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit" class="btn btn-primary btn-sm mt-2">
+                                                    {% if booking.delivery_person %}
+                                                        Update Delivery Person
+                                                    {% else %}
+                                                        Assign Delivery Person
+                                                    {% endif %}
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>No confirmed or assigned bookings available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.delivery-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('{% url "delivery_management" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                location.reload(); // Reload the page after update
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

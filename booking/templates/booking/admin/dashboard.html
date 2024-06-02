@@ -1,0 +1,54 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Total Bookings</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ total_bookings }}</h5>
+                    <p class="card-text">Bookings made so far.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Confirmed Bookings</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ total_confirmed_bookings }}</h5>
+                    <p class="card-text">Bookings confirmed so far.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header">Total Deliveries</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ total_deliveries }}</h5>
+                    <p class="card-text">Deliveries completed so far.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Delivery Personnel</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ total_delivery_personnel }}</h5>
+                    <p class="card-text">Total delivery personnel available.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <a href="{% url 'inventory_management' %}" class="btn btn-primary btn-block">Manage Inventory</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'delivery_management' %}" class="btn btn-primary btn-block">Manage Deliveries</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'generate_reports' %}" class="btn btn-primary btn-block">View Reports</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
