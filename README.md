@@ -50,7 +50,7 @@ This is a Django-based web application for managing bookings of cylinder stock. 
 
 ## Usage
 
-- Visit the admin panel at `http://localhost:8000/admin` to manage users, bookings, deliveries, etc.
+- Visit the admin panel at `http://localhost:8000/admin` or `http://localhost:8000/admin-view\dashboard`(admin@admin.com) to manage users, bookings, deliveries, etc.
 - Users can access the booking system frontend to book cylinders and view booking history.
 - Admin can generate invoices and view reports from the admin panel.
 
